@@ -14,7 +14,7 @@
 
 <html>
   <head>
-    <title>Functional Reactive Programming in Game Development</title>
+    <title>Rapid, Scalable Game development using Functional Reactive Programming</title>
 
     <meta charset='utf-8'>
     <script src='slides.js'></script>
@@ -35,7 +35,7 @@
            slides below. -->
         
       <article>
-		<h1> Functional Reactive Programming in Game Development </h1>
+		<h1>Rapid, Scalable Game development using Functional Reactive Programming </h1>
 		<p>
 			Ray Shulang Lei
 		</p>
@@ -147,9 +147,9 @@
 		</pre>
 		</section>
         <ul class="build">
+            <li>This is ugly! Look at the giantic gameState!</li>
             <li>Mutable GameState variable</li>
-            <li>This is not functional programming!</li>
-            <li>And it's ugly! Look at the giant gameState!</li>
+            <li>This isn't functional programming, this is imperative!</li>
             <li>Games don't like functional programming, what are we gonna do?</li>
         </ul>
       </article>
@@ -192,9 +192,9 @@ signal(position, speed, mouseXY)
       <article>
       <h3>Looks like we are almost there:</h3>
         <pre>
-signal(position, speed, mouseXY, gamepadEvent, collisionEvent) 
+signal(position, speed, mouseXY), event(gamepad, collision) 
   -> PlayerFunction 
-    -> signal(position, speed, mouseXY, gamepadEvent, collisionEvent)
+    -> signal(position, speed, mouseXY)
         </pre>
         <div class="build">
             <p>But but but, what if my player dies? How do I remove and spawn?</p>
