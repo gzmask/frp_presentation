@@ -155,20 +155,96 @@
       </article>
 
       <article>
-        <h3>Functional Reactive programming to the rescue</h3>
-        <p>
-            A signal is a type value related to continuous time:
-            <pre> Signal a = Time -> a</pre>
-            A signal function is a function from Signal to Signal:
-            <pre> SF a b = Signal a -> Signal b</pre>
-        </p>
+        <h1>Functional Reactive programming to the rescue!</h1>
+        
       </article>
 
       <article>
-        Signal function combinators composite function(s) to a Signal Function:
-        <img src="images/sf_com.jpg" />
+      <span class="blue">Definiation of FRP</span> - functions react to an input signal and returns an updated signal.<br /><br />
+        A <span class="red">signal</span> is a type value related to continuous time:
+        <pre> Signal a = Time -> a</pre>
+        A <span class="red">signal function</span> is a function from Signal to Signal:
+        <pre> SF a b = Signal a -> Signal b</pre>
+        You can't touch the signals without using sigal functions.
       </article>
 
+      <article>
+        <span class="red">Signal function combinators</span> composite function(s) to a Signal Function:
+        <img src="images/sf_com.jpg" />
+         You can't touch the signal functions without using combinators.
+      </article>
+
+      <article>
+      <h3>Nice! we can now do:</h3>
+        <pre>
+signal(position, speed, mouseXY) 
+    -> PlayerFunction 
+        -> signal(position, speed, mouseXY)
+        </pre>
+        <div class="build">
+            <p>But what about gamepads buttons, collisions etc.?</p> 
+            <p>An <span class="red">event</span> is a type to represent discrete events such as a mouse click:
+            <pre>data Event a = NoEvent | Event a</pre>
+            </p>
+        </div>
+      </article>
+
+      <article>
+      <h3>Looks like we are almost there:</h3>
+        <pre>
+signal(position, speed, mouseXY, gamepadEvent, collisionEvent) 
+  -> PlayerFunction 
+    -> signal(position, speed, mouseXY, gamepadEvent, collisionEvent)
+        </pre>
+        <div class="build">
+            <p>But but but, what if my player dies? How do I remove and spawn?</p>
+            <p>Also, how does my object know if it is colliding with each other?</p>
+        </div>
+      </article>
+
+       
+      <article>
+          <h3>The last piece of the puzzle: Switches!</h3>
+          <span class="red">Switch</span> switches from one subordinate signal function into another when a switching event occurs.
+          <pre>
+            switch :: SF a (b, Event c) -> 
+              (c -> SF a b) -> SF a b
+          </pre>
+          <div class="build">
+              <p>What is this non-sense? What are these strange symbols stand for?</p>
+              <p>It's haskell...I know. It says a switch will take an activated signal function with a trigger event, and another signal function as input. If the trigger event occurs, it applies the second signal function, else it applies the original signal function.
+          </div>
+          </article>
+          <article>
+          <h3>The big picture</h3>
+          We use switches to route events and switch on/off game objects for spawn/kill.
+          <img style="height: 500px;" src="images/big_pic.jpg" />
+      </article>
+
+
+      <article>
+      <h3>Conclusion</h3>
+      <br />
+          <div class="build">
+            <p>Q:What framework can I start to use FRP for game dev?
+      <br />
+            A:My presentation is based on the <a href="http://haskell.cs.yale.edu/wp-content/uploads/2011/01/yampa-arcade.pdf">Yampa</a> framework in Haskell</p>
+            <p>Q:How well is this method perform?
+      <br />
+            A:Paul Hudak made a game <a href="http://www.youtube.com/watch?v=NF3bEsKf-Xs">"PaddleBall"</a> with 17 lines of code in FAL</p>
+            <p>Q:Is there example of complex game out there made with FRP?
+      <br />
+            A:Check out <a href="http://www.haskell.org/haskellwiki/Frag">Frag</a>, a first personal shooter game</p>
+          </div>
+      </article>
+
+      <article>
+      <h3>Reference</h3>
+      <ul>
+          <li>Henrik Nilsson, Antony Courtney, John Peterson, "The Yampa Arcade", 2003 </li>
+          <li>Mun Hon Cheong, "Functional Programming and 3D games", 2005</li>
+      </ul>
+      </article>
    </section>
 
   </body>
