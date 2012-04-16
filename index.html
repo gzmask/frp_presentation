@@ -58,7 +58,7 @@
       <article>
         <h3>
 			Imperative Example: 
-			Count all numbers that can be divided by 5 from 1 to 150
+			Count all numbers that can be divided exactly by 5 from 1 to 150.
         </h3>
 		<section>
 		<pre>
@@ -76,7 +76,7 @@
       <article>
         <h3>
 			Functional Example: 
-			Count all numbers that can be divided by 5 from 1 to 150
+			Count all numbers that can be divided exactly by 5 from 1 to 150.
         </h3>
 		<section>
 		<pre>
@@ -84,6 +84,91 @@
 		</pre>
 		</section>
       </article>
+
+      <article>
+        <h3> Advantages of functional programming </h3>
+        <ul>
+            <li>Expressive</li>
+            <li>Easy to debug and test</li>
+            <li>Easy to scale thus good modularity</li>
+            <li>Easy to parallelized, adapt to concurrency well</li>
+            <li>Rapid development</li>
+            <li>Matchmatically elegant</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3> Pitfalls of functional programming </h3>
+        <ul>
+            <li>Difficult to learn</li>
+            <li>Hard to predict time and space complexity(due to lazyz eval)</li>
+            <li>Hard to program for some real life problem because it abstracts from hardware more than imperative</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3> Problems of imperative programming in Game development </h3>
+        <ul class="build">
+            <li>Data Race, deadlock</li>
+            <li>Scaling requires lots efforts</li>
+            <li>Debugging and testing requires lots efforts</li>
+            <li>Hard to understand large projects</li>
+            <li>Hard to extend modularly</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>Great! Let's just use Functional programming for games then, easy:</h3>
+		<section>
+		<pre>
+            GameLoop( 
+                Players(), AIs(), Trees(), Guns(), Bullets(), ... )
+		</pre>
+		</section>
+        <ul class="build">
+            <li>Wait a second! Something doesn't seem right here...</li>
+            <li>Games have time-varying states</li>
+            <li>Game objects interact with each other</li>
+            <li>Game objects reacts to physical laws and player IOs</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>I got it, give me one more chance, I can still do it, boss!</h3>
+		<section>
+		<pre>
+            gameState = [playerPosition, playerSpeed, 
+                        gamepadIO, playerIsColliding, ... ]
+            t = currentTime()
+            GameLoop( 
+                Players(gameState, t), AIs(gameState, t), 
+                Trees(gameState, t), Guns(gameState, t), 
+                Bullets(gameState, t), ... )
+		</pre>
+		</section>
+        <ul class="build">
+            <li>Mutable GameState variable</li>
+            <li>This is not functional programming!</li>
+            <li>And it's ugly! Look at the giant gameState!</li>
+            <li>Games don't like functional programming, what are we gonna do?</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>Functional Reactive programming to the rescue</h3>
+        <p>
+            A signal is a type value related to continuous time:
+            <pre> Signal a = Time -> a</pre>
+            A signal function is a function from Signal to Signal:
+            <pre> SF a b = Signal a -> Signal b</pre>
+        </p>
+      </article>
+
+      <article>
+        Signal function combinators composite function(s) to a Signal Function:
+        <img src="images/sf_com.jpg" />
+      </article>
+
    </section>
 
   </body>
