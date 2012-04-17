@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<!--
+  Google HTML5 slide template
+
+  Authors: Luke Mahé (code)
+           Marcin Wichary (code and design)
+           
+           Dominic Mazzoni (browser compatibility)
+           Charles Chen (ChromeVox support)
+
+  URL: http://code.google.com/p/html5slides/
+-->
+
+<html>
+  <head>
+    <title>Rapid, Scalable Game development using Functional Reactive Programming</title>
+
+    <meta charset='utf-8'>
+    <script src='slides.js'></script>
+  </head>
+  
+  <style>
+    /* Your individual styles here, or just use inline styles if that’s
+       what you want. */
+    
+    
+  </style>
+
+  <body style='display: none'>
+
+    <section class='slides layout-regular template-default'>
+      
+      <!-- Your slides (<article>s) go here. Delete or comment out the
+           slides below. -->
+        
+      <article>
+		<h1>Rapid, Scalable Game development using Functional Reactive Programming </h1>
+		<p>
+			Ray Shulang Lei
+		</p>
+      </article>
+
+      <article>
+        <h3>
+			Imperative vs Functional programming
+        </h3>
+		<ul>
+			<li>
+			Imperative - describes computation in terms of statements that change a program state. 
+			</li>
+			<li>
+			Functional -  treats computation as the evaluation of mathematical functions and avoids state and mutable data, thus expressing the logic of a computation without describing its control flow.
+			</li>
+		</ul>
+      </article>
+
+      <article>
+        <h3>
+			Imperative Example: 
+			Count all numbers that can be divided exactly by 5 from 1 to 150.
+        </h3>
+		<section>
+		<pre>
+			int sum = 0;
+			for (int i = 0; i < 150; i++)
+			{
+				if (i % 5 == 0)
+				  sum += i;
+			}
+			printf(sum);
+		</pre>
+		</section>
+      </article>
+
+      <article>
+        <h3>
+			Functional Example: 
+			Count all numbers that can be divided exactly by 5 from 1 to 150.
+        </h3>
+		<section>
+		<pre>
+			show $ length [x | x <- [1..150], x `mod` 5 == 0]
+		</pre>
+		</section>
+      </article>
+
+      <article>
+        <h3> Advantages of functional programming </h3>
+        <ul>
+            <li>Expressive</li>
+            <li>Easy to debug and test</li>
+            <li>Easy to scale thus good modularity</li>
+            <li>Easy to parallelized, adapt to concurrency well</li>
+            <li>Rapid development</li>
+            <li>Matchmatically elegant</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3> Pitfalls of functional programming </h3>
+        <ul>
+            <li>Difficult to learn</li>
+            <li>Hard to predict time and space complexity(due to lazyz eval)</li>
+            <li>Hard to program for some real life problem because it abstracts from hardware more than imperative</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3> Problems of imperative programming in Game development </h3>
+        <ul class="build">
+            <li>Data Race, deadlock</li>
+            <li>Scaling requires lots efforts</li>
+            <li>Debugging and testing requires lots efforts</li>
+            <li>Hard to understand large projects</li>
+            <li>Hard to extend modularly</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>Great! Let's just use Functional programming for games then, easy:</h3>
+		<section>
+		<pre>
+            GameLoop( 
+                Players(), AIs(), Trees(), Guns(), Bullets(), ... )
+		</pre>
+		</section>
+        <ul class="build">
+            <li>Wait a second! Something doesn't seem right here...</li>
+            <li>Games have time-varying states</li>
+            <li>Game objects interact with each other</li>
+            <li>Game objects reacts to physical laws and player IOs</li>
+        </ul>
+      </article>
+
+      <article>
+        <h3>I got it, give me one more chance, I can still do it, boss!</h3>
+		<section>
+		<pre>
+            gameState = [playerPosition, playerSpeed, 
+                        gamepadIO, playerIsColliding, ... ]
+            t = currentTime()
+            GameLoop( 
+                Players(gameState, t), AIs(gameState, t), 
+                Trees(gameState, t), Guns(gameState, t), 
+                Bullets(gameState, t), ... )
+		</pre>
+		</section>
+        <ul class="build">
+            <li>This is ugly! Look at the giantic gameState!</li>
+            <li>Mutable GameState variable</li>
+            <li>This isn't functional programming, this is imperative!</li>
+            <li>Games don't like functional programming, what are we gonna do?</li>
+        </ul>
+      </article>
+
+      <article>
+        <h1>Functional Reactive programming to the rescue!</h1>
+        
+      </article>
+
+      <article>
+      <span class="blue">Definiation of FRP</span> - functions react to an input signal and returns an updated signal.<br /><br />
+        A <span class="red">signal</span> is a type value related to continuous time:
+        <pre> Signal a = Time -> a</pre>
+        A <span class="red">signal function</span> is a function from Signal to Signal:
+        <pre> SF a b = Signal a -> Signal b</pre>
+        You can't touch the signals without using sigal functions.
+      </article>
+
+      <article>
+        <span class="red">Signal function combinators</span> composite function(s) to a Signal Function:
+        <img src="images/sf_com.jpg" />
+         You can't touch the signal functions without using combinators.
+      </article>
+
+      <article>
+      <h3>Nice! we can now do:</h3>
+        <pre>
+signal(position, speed, mouseXY) 
+    -> PlayerFunction 
+        -> signal(position, speed, mouseXY)
+        </pre>
+        <div class="build">
+            <p>But what about gamepads buttons, collisions etc.?</p> 
+            <p>An <span class="red">event</span> is a type to represent discrete events such as a mouse click:
+            <pre>data Event a = NoEvent | Event a</pre>
+            </p>
+        </div>
+      </article>
+
+      <article>
+      <h3>Looks like we are almost there:</h3>
+        <pre>
+signal(position, speed, mouseXY), event(gamepad, collision) 
+  -> PlayerFunction 
+    -> signal(position, speed, mouseXY)
+        </pre>
+        <div class="build">
+            <p>But but but, what if my player dies? How do I remove and spawn?</p>
+            <p>Also, how does my object know if it is colliding with each other?</p>
+        </div>
+      </article>
+
+       
+      <article>
+          <h3>The last piece of the puzzle: Switches!</h3>
+          <span class="red">Switch</span> switches from one subordinate signal function into another when a switching event occurs.
+          <pre>
+            switch :: SF a (b, Event c) -> 
+              (c -> SF a b) -> SF a b
+          </pre>
+          <div class="build">
+              <p>What is this non-sense? What are these strange symbols stand for?</p>
+              <p>It's haskell...I know. It says a switch will take an activated signal function with a trigger event, and another signal function as input. If the trigger event occurs, it applies the second signal function, else it applies the original signal function.
+          </div>
+          </article>
+          <article>
+          <h3>The big picture</h3>
+          We use switches to route events and switch on/off game objects for spawn/kill.
+          <img style="height: 500px;" src="images/big_pic.jpg" />
+      </article>
+
+
+      <article>
+      <h3>Conclusion</h3>
+      <br />
+          <div class="build">
+            <p>Q:What framework can I start to use FRP for game dev?
+      <br />
+            A:My presentation is based on the <a href="http://haskell.cs.yale.edu/wp-content/uploads/2011/01/yampa-arcade.pdf">Yampa</a> framework in Haskell</p>
+            <p>Q:How well is this method perform?
+      <br />
+            A:Paul Hudak made a game <a href="http://www.youtube.com/watch?v=NF3bEsKf-Xs">"PaddleBall"</a> with 17 lines of code in FAL</p>
+            <p>Q:Is there example of complex game out there made with FRP?
+      <br />
+            A:Check out <a href="http://www.haskell.org/haskellwiki/Frag">Frag</a>, a first personal shooter game</p>
+          </div>
+      </article>
+
+      <article>
+      <h3>Reference</h3>
+      <ul>
+          <li>Henrik Nilsson, Antony Courtney, John Peterson, "The Yampa Arcade", 2003 </li>
+          <li>Mun Hon Cheong, "Functional Programming and 3D games", 2005</li>
+      </ul>
+      </article>
+   </section>
+
+  </body>
+</html>
